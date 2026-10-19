@@ -1,6 +1,6 @@
 <?php 
 /*
-    Nama file   : web.php
+    Nama file   : BerandaController.php
     NIM         : 3202416144
     Nama        : Mar'atussholeha
 */
