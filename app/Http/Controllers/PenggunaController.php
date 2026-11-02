@@ -1,0 +1,28 @@
+<?php
+/*
+    Nama file : PenggunaController.php
+    NIM       : 3202416144
+    Nama      : Mar'atussholeha
+*/
+
+namespace App\Http\Controllers;
+
+use App\Models\User;
+use Illuminate\View\View;
+
+class PenggunaController extends Controller
+{
+    public function index(): View
+    {
+        $kolom = [
+            'name' => 'Nama', 'email' => 'Email', 'role' => 'Peran',
+        ];
+
+        // password tidak diambil dari database
+        $pengguna = User::orderBy('name')
+            ->get(['name', 'email', 'role'])
+            ->toArray();
+
+        return view('pengguna.index', compact('kolom', 'pengguna'));
+    }
+}

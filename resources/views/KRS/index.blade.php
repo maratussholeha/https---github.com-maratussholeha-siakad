@@ -17,7 +17,7 @@
         </div>
 
         <div class="card-body p-0">
-            <x-tabel :kolom="$kolom" :baris="$krs" />
+            <x-table :kolom="$kolom" :baris="$krs" />
         </div>
     </div>
 @endsection

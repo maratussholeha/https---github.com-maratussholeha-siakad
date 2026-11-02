@@ -1,0 +1,30 @@
+<?php
+/*
+    Nama file   : AdminSeeder.php
+    NIM         : 3202416144
+    Nama        : Mar'atussholeha
+*/
+
+namespace Database\Seeders;
+
+use App\Models\User;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+
+class AdminSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        User::updateOrCreate(
+            ['email' => 'admin@siakad.test'],
+            [
+                'name'     => 'Administrator SIAKAD',
+                'password' => Hash::make('Admin@12345'),
+                'role'     => 'admin',
+            ]
+        );
+    }
+}

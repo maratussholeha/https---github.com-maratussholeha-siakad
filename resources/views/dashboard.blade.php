@@ -1,3 +1,7 @@
+{{--Nama file   : dashboard.blade.php (dosen)
+    NIM         : 3202416144
+    Nama        : Mar'atussholeha   --}}
+	
 @extends('layouts.app')
 
 @section('title', 'Dashboard')
@@ -7,9 +11,10 @@
         judul="Dashboard"
         deskripsi="Ringkasan data akademik (data sementara)." />
 
-    <div class="row g-3 mb-4">
+    {{-- Kartu Statistik --}}
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-5 g-3 mb-4">
         @foreach ($statistik as $item)
-            <div class="col-12 col-sm-6 col-xl-3">
+            <div class="col">
                 <x-stat-card
                     :judul="$item['judul']"
                     :jumlah="$item['jumlah']"
@@ -19,6 +24,7 @@
         @endforeach
     </div>
 
+    {{-- KRS Terbaru dan Status KRS --}}
     <div class="row g-3">
         <div class="col-12 col-xl-8">
             <div class="card border-0 shadow-sm h-100">
@@ -27,7 +33,7 @@
                 </div>
 
                 <div class="card-body p-0">
-                    <x-tabel :kolom="$kolomKrs" :baris="$krsTerbaru" />
+                    <x-table :kolom="$kolomKrs" :baris="$krsTerbaru" />
                 </div>
             </div>
         </div>

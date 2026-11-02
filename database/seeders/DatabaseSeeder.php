@@ -1,4 +1,9 @@
 <?php
+/*
+    Nama file   : DatabaseSeeder.php
+    NIM         : 3202416144
+    Nama        : Mar'atussholeha
+*/
 
 namespace Database\Seeders;
 
@@ -15,11 +20,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+		$this->call([
+			AdminSeeder::class,
+			UserSeeder::class,
+			DosenSeeder::class,
+			MahasiswaSeeder::class,
+			MataKuliahSeeder::class,
+			KrsSeeder::class,
+		]);
     }
 }

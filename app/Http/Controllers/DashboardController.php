@@ -13,23 +13,7 @@ class DashboardController extends Controller
 {
     public function index(): View
     {
-        // Data sementara. Akan diganti query Eloquent pada jobsheet lanjutan.
-        $statistik = [
-            ['judul' => 'Mahasiswa', 'jumlah' => 1250,
-                'ikon' => 'bi-mortarboard-fill', 'warna' => 'primary'],
-            ['judul' => 'Dosen', 'jumlah' => 68,
-                'ikon' => 'bi-person-badge-fill', 'warna' => 'success'],
-            ['judul' => 'Mata Kuliah', 'jumlah' => 94,
-                'ikon' => 'bi-book-half', 'warna' => 'warning'],
-            ['judul' => 'KRS Aktif', 'jumlah' => 842,
-                'ikon' => 'bi-journal-check', 'warna' => 'info'],
-        ];
-
-        $kolomKrs = [
-            'nim' => 'NIM', 'nama' => 'Nama Mahasiswa',
-            'sks' => 'SKS', 'status' => 'Status',
-        ];
-
+        // Data sementara.
         $krsTerbaru = [
             ['nim' => '2401001', 'nama' => 'Ahmad Fauzi',
                 'sks' => 22, 'status' => 'Disetujui'],
@@ -41,6 +25,30 @@ class DashboardController extends Controller
                 'sks' => 18, 'status' => 'Menunggu'],
             ['nim' => '2201020', 'nama' => 'Rizky Pratama',
                 'sks' => 21, 'status' => 'Disetujui'],
+        ];
+
+        // Menghitung rata-rata SKS per KRS.
+        $totalKrs = count($krsTerbaru);
+        $rataRataSks = $totalKrs > 0
+            ? round(array_sum(array_column($krsTerbaru, 'sks')) / $totalKrs, 1)
+            : 0;
+
+        $statistik = [
+            ['judul' => 'Mahasiswa', 'jumlah' => 1250,
+                'ikon' => 'bi-mortarboard-fill', 'warna' => 'primary'],
+            ['judul' => 'Dosen', 'jumlah' => 68,
+                'ikon' => 'bi-person-badge-fill', 'warna' => 'success'],
+            ['judul' => 'Mata Kuliah', 'jumlah' => 94,
+                'ikon' => 'bi-book-half', 'warna' => 'warning'],
+            ['judul' => 'KRS Aktif', 'jumlah' => 842,
+                'ikon' => 'bi-journal-check', 'warna' => 'info'],
+            ['judul' => 'Rata-rata SKS per KRS', 'jumlah' => $rataRataSks,
+                'ikon' => 'bi-calculator-fill', 'warna' => 'primary'],
+        ];
+
+        $kolomKrs = [
+            'nim' => 'NIM', 'nama' => 'Nama Mahasiswa',
+            'sks' => 'SKS', 'status' => 'Status',
         ];
 
         $statusKrs = [

@@ -11,6 +11,14 @@ class MataKuliahController extends Controller
 {
     public function index()
     {
+        $kolom = [
+            'kode' => 'Kode Mata Kuliah',
+            'nama' => 'Nama Mata Kuliah',
+            'sks' => 'SKS',
+            'semester' => 'Semester',
+            'jenis' => 'Jenis',
+        ];
+
         $matakuliah = [
             [
                 'kode' => 'TIF201',
@@ -42,6 +50,6 @@ class MataKuliahController extends Controller
             ],
         ];
 
-        return view('matakuliah.index', compact('matakuliah'));
+        return view('matakuliah.index', compact('kolom', 'matakuliah'));
     }
 }

@@ -11,6 +11,13 @@ class DosenController extends Controller
 {
     public function index()
     {
+        $kolom = [
+            'nidn' => 'NIDN',
+            'nama' => 'Nama Dosen',
+            'keahlian' => 'Keahlian',
+            'status' => 'Status',
+        ];
+
         $dosen = [
             [
                 'nidn' => '0012038801',
@@ -38,6 +45,6 @@ class DosenController extends Controller
             ],
         ];
 
-        return view('dosen.index', compact('dosen'));
+        return view('dosen.index', compact('kolom', 'dosen'));
     }
 }

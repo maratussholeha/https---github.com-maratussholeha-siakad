@@ -11,6 +11,14 @@ class KrsController extends Controller
 {
     public function index()
     {
+        $kolom = [
+            'nim' => 'NIM',
+            'nama' => 'Nama Mahasiswa',
+            'semester' => 'Semester',
+            'sks' => 'Jumlah SKS',
+            'status' => 'Status',
+        ];
+
         $krs = [
             [
                 'nim' => '2401001',
@@ -42,6 +50,6 @@ class KrsController extends Controller
             ],
         ];
 
-        return view('krs.index', compact('krs'));
+        return view('krs.index', compact('kolom', 'krs'));
     }
 }
