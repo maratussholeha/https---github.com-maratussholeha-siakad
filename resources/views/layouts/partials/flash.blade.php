@@ -1,21 +1,30 @@
-{{-- 
+{{--
     Nama file : flash.blade.php
-    Nama    : Mar'atussholeha
-	NIM		: 3202416144
+    Nama      : Mar'atussholeha
+    NIM       : 3202416144
 --}}
 
-@foreach ([
-    'success' => 'success',
-    'error' => 'danger',
-    'warning' => 'warning',
-    'info' => 'info',
-] as $kunci => $kelas)
-    @if (session($kunci))
-        <div class="alert alert-{{ $kelas }} alert-dismissible fade show"
-             role="alert">
-            {{ session($kunci) }}
-            <button type="button" class="btn-close"
-                    data-bs-dismiss="alert" aria-label="Tutup"></button>
-        </div>
-    @endif
-@endforeach
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
+
+        @foreach (['success', 'error', 'warning', 'info'] as $pesan)
+            @if (session($pesan))
+                Toast.fire({
+                    icon: @json($pesan),
+                    title: @json(session($pesan))
+                });
+            @endif
+        @endforeach
+
+    });
+</script>
+@endpush

@@ -35,7 +35,40 @@
 
     </main>
 
-    <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+   <script src="{{ asset('vendor/sweetalert2/sweetalert2.all.min.js') }}"></script>
+
+	<script>
+		@if (session()->has('success'))
+			Swal.fire({
+				icon: 'success',
+				title: 'Anda Berhasil Keluar!',
+				text: @json(session('success')),
+				confirmButtonText: 'OK',
+				allowOutsideClick: false
+			});
+		@endif
+	</script>
+	
+	{{-- NOTIFIKASI LOGIN GAGAL --}}
+	<script src="{{ asset('vendor/sweetalert2/sweetalert2.all.min.js') }}"></script>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+
+			@if ($errors->any())
+				Swal.fire({
+					icon: 'error',
+					title: 'Login Gagal!',
+					text: 'Email atau kata sandi yang Anda masukkan tidak sesuai.',
+					confirmButtonText: 'OK',
+					confirmButtonColor: '#6558c9',
+					allowOutsideClick: false
+				});
+			@endif
+
+		});
+	</script>
+	@stack('scripts')
 
 </body>
 </html>

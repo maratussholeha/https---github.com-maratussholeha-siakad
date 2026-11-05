@@ -15,12 +15,12 @@ class PenggunaController extends Controller
     public function index(): View
     {
         $kolom = [
-            'name' => 'Nama', 'email' => 'Email', 'role' => 'Peran',
+            'name' => 'Nama', 'email' => 'Email', 'role' => 'Peran',  'last_login_at' => 'Login Terakhir',
         ];
 
         // password tidak diambil dari database
         $pengguna = User::orderBy('name')
-            ->get(['name', 'email', 'role'])
+            ->get(['name', 'email', 'role', 'last_login_at'])
             ->toArray();
 
         return view('pengguna.index', compact('kolom', 'pengguna'));
