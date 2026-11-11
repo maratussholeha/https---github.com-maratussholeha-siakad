@@ -4,7 +4,7 @@
     Nama       : Mar'atussholeha
 --}}
 
-<nav class="navbar navbar-dark bg-success sticky-top shadow-sm">
+<nav class="navbar navbar-dark bg-primary sticky-top shadow-sm">
     <div class="container-fluid">
 
         {{-- Logo dan tombol sidebar --}}

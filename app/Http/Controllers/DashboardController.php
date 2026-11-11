@@ -7,58 +7,155 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Mahasiswa;
+use App\Models\Dosen;
+use App\Models\Mata_Kuliah;
+use App\Models\Krs;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
     public function index(): View
     {
-        // Data sementara.
-        $krsTerbaru = [
-            ['nim' => '2401001', 'nama' => 'Ahmad Fauzi',
-                'sks' => 22, 'status' => 'Disetujui'],
-            ['nim' => '2401002', 'nama' => 'Siti Rahmawati',
-                'sks' => 20, 'status' => 'Disetujui'],
-            ['nim' => '2301005', 'nama' => 'Budi Santoso',
-                'sks' => 24, 'status' => 'Menunggu'],
-            ['nim' => '2301012', 'nama' => 'Dewi Lestari',
-                'sks' => 18, 'status' => 'Menunggu'],
-            ['nim' => '2201020', 'nama' => 'Rizky Pratama',
-                'sks' => 21, 'status' => 'Disetujui'],
-        ];
+        // Mengambil seluruh data KRS beserta relasinya.
+        $semuaKrs = Krs::with(['mahasiswa', 'mataKuliah'])
+            ->latest()
+            ->get();
+
+        // Menghitung jumlah data dari database.
+        $jumlahMahasiswa = Mahasiswa::count();
+        $jumlahDosen = Dosen::count();
+        $jumlahMataKuliah = Mata_Kuliah::count();
+        $jumlahKrs = $semuaKrs->count();
+
+        // KRS aktif adalah KRS yang belum ditolak.
+        $jumlahKrsAktif = $semuaKrs->filter(function ($krs) {
+            return strtolower($krs->status) !== 'ditolak';
+        })->count();
+
+        // Menghitung total SKS setiap KRS.
+        $totalSks = $semuaKrs->sum(function ($krs) {
+            return $krs->mataKuliah->sum('sks');
+        });
 
         // Menghitung rata-rata SKS per KRS.
-        $totalKrs = count($krsTerbaru);
-        $rataRataSks = $totalKrs > 0
-            ? round(array_sum(array_column($krsTerbaru, 'sks')) / $totalKrs, 1)
+        $rataRataSks = $jumlahKrs > 0
+            ? round($totalSks / $jumlahKrs, 1)
             : 0;
 
+        // Data kartu statistik.
         $statistik = [
-            ['judul' => 'Mahasiswa', 'jumlah' => 1250,
-                'ikon' => 'bi-mortarboard-fill', 'warna' => 'primary'],
-            ['judul' => 'Dosen', 'jumlah' => 68,
-                'ikon' => 'bi-person-badge-fill', 'warna' => 'success'],
-            ['judul' => 'Mata Kuliah', 'jumlah' => 94,
-                'ikon' => 'bi-book-half', 'warna' => 'warning'],
-            ['judul' => 'KRS Aktif', 'jumlah' => 842,
-                'ikon' => 'bi-journal-check', 'warna' => 'info'],
-            ['judul' => 'Rata-rata SKS per KRS', 'jumlah' => $rataRataSks,
-                'ikon' => 'bi-calculator-fill', 'warna' => 'primary'],
+            [
+                'judul' => 'Mahasiswa',
+                'jumlah' => $jumlahMahasiswa,
+                'ikon' => 'bi-mortarboard-fill',
+                'warna' => 'primary',
+            ],
+            [
+                'judul' => 'Dosen',
+                'jumlah' => $jumlahDosen,
+                'ikon' => 'bi-person-badge-fill',
+                'warna' => 'success',
+            ],
+            [
+                'judul' => 'Mata Kuliah',
+                'jumlah' => $jumlahMataKuliah,
+                'ikon' => 'bi-book-half',
+                'warna' => 'warning',
+            ],
+            [
+                'judul' => 'KRS Aktif',
+                'jumlah' => $jumlahKrsAktif,
+                'ikon' => 'bi-journal-check',
+                'warna' => 'info',
+            ],
+            [
+                'judul' => 'Rata-rata SKS per KRS',
+                'jumlah' => $rataRataSks,
+                'ikon' => 'bi-calculator-fill',
+                'warna' => 'primary',
+            ],
         ];
 
+        // Menyiapkan lima data KRS terbaru.
+        $krsTerbaru = $semuaKrs->take(5)->map(function ($krs) {
+            return [
+                'nim' => $krs->mahasiswa->nim ?? '-',
+                'nama' => $krs->mahasiswa->nama ?? '-',
+                'sks' => $krs->mataKuliah->sum('sks'),
+                'status' => $this->labelStatus($krs->status),
+            ];
+        })->values()->all();
+
+        // Kolom tabel KRS terbaru.
         $kolomKrs = [
-            'nim' => 'NIM', 'nama' => 'Nama Mahasiswa',
-            'sks' => 'SKS', 'status' => 'Status',
+            'nim' => 'NIM',
+            'nama' => 'Nama Mahasiswa',
+            'sks' => 'SKS',
+            'status' => 'Status',
         ];
 
+        // Menghitung jumlah KRS berdasarkan status.
+        $statusDisetujui = $semuaKrs->filter(function ($krs) {
+            return in_array(
+                strtolower($krs->status),
+                ['disetujui', 'disetejui']
+            );
+        })->count();
+
+        $statusMenunggu = $semuaKrs->filter(function ($krs) {
+            return in_array(
+                strtolower($krs->status),
+                ['draft', 'diajukan', 'menunggu']
+            );
+        })->count();
+
+        $statusDitolak = $semuaKrs->filter(function ($krs) {
+            return strtolower($krs->status) === 'ditolak';
+        })->count();
+
+        // Menghitung persentase status KRS.
         $statusKrs = [
-            ['label' => 'Disetujui', 'persen' => 70, 'warna' => 'success'],
-            ['label' => 'Menunggu', 'persen' => 22, 'warna' => 'warning'],
-            ['label' => 'Ditolak', 'persen' => 8, 'warna' => 'danger'],
+            [
+                'label' => 'Disetujui',
+                'persen' => $jumlahKrs > 0
+                    ? round(($statusDisetujui / $jumlahKrs) * 100)
+                    : 0,
+                'warna' => 'success',
+            ],
+            [
+                'label' => 'Menunggu',
+                'persen' => $jumlahKrs > 0
+                    ? round(($statusMenunggu / $jumlahKrs) * 100)
+                    : 0,
+                'warna' => 'warning',
+            ],
+            [
+                'label' => 'Ditolak',
+                'persen' => $jumlahKrs > 0
+                    ? round(($statusDitolak / $jumlahKrs) * 100)
+                    : 0,
+                'warna' => 'danger',
+            ],
         ];
 
         return view('dashboard', compact(
-            'statistik', 'kolomKrs', 'krsTerbaru', 'statusKrs'
+            'statistik',
+            'kolomKrs',
+            'krsTerbaru',
+            'statusKrs'
         ));
+    }
+
+    // Mengubah kode status menjadi tulisan yang mudah dibaca.
+    private function labelStatus($status): string
+    {
+        return match (strtolower($status)) {
+            'disetujui', 'disetejui' => 'Disetujui',
+            'diajukan' => 'Menunggu',
+            'draft' => 'Draft',
+            'ditolak' => 'Ditolak',
+            default => ucfirst($status),
+        };
     }
 }

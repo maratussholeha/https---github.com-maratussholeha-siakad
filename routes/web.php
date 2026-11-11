@@ -16,6 +16,7 @@ use App\Http\Controllers\MataKuliahController;
 use App\Http\Controllers\PenggunaController;
 use App\Http\Middleware\NoStoreAfterLogout;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\StatistikController;
 
 
 // ==========================================
@@ -31,8 +32,6 @@ Route::middleware('guest')->group(function () {
         ->name('login.attempt');
 
 });
-
-
 // ==========================================
 // HALAMAN INTERNAL (SUDAH LOGIN)
 // ==========================================
@@ -52,18 +51,40 @@ Route::middleware([
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
+		
+	// Dashboard Statistik
+	Route::get('/dashboard/statistik', [StatistikController::class, 'index'])
+		->name('dashboard.statistik');
+	
+		 // Mahasiswa
+    Route::get('/mahasiswa/data', [MahasiswaController::class, 'data'])
+        ->name('mahasiswa.data');
 
-    // Mahasiswa
-    Route::get('/mahasiswa', [MahasiswaController::class, 'index'])
-		 ->name('mahasiswa.index');
-   
-    // Mata Kuliah
-    Route::get('/mata-kuliah', [MataKuliahController::class, 'index'])
-        ->name('matakuliah.index');
+    Route::middleware('role:admin')->group(function () {
+        Route::resource('mahasiswa', MahasiswaController::class)
+            ->except(['index', 'show']);
+    });
 
-    // KRS
-    Route::get('/krs', [KrsController::class, 'index'])
-        ->name('krs.index');
+    Route::resource('mahasiswa', MahasiswaController::class)
+        ->only(['index', 'show']);
+		
+	// Mata Kuliah
+    Route::get('/matakuliah/data', [MataKuliahController::class, 'data'])
+        ->name('matakuliah.data');
+	
+	Route::middleware('role:admin')->group(function () {
+        Route::resource('matakuliah', MataKuliahController::class)
+            ->except(['index', 'show']);
+    });
+
+    Route::resource('matakuliah', MataKuliahController::class)
+        ->only(['index', 'show']);
+
+    // CRUD KRS
+	Route::get('/krs/data', [KrsController::class, 'data'])
+		->name('krs.data');
+
+	Route::resource('krs', KrsController::class);
 
     // Beranda
     Route::get('/beranda', [BerandaController::class, 'index'])

@@ -1,13 +1,14 @@
 {{--
-    Nama file : guest.blade.php
+    Nama file : login.blade.php
     NIM       : 3202416144
     Nama      : Mar'atussholeha
 --}}
+
 @extends('layouts.guest')
 
 @section('title', 'Login')
 
-{{-- CSS UNTUK FORM LOGIN --}}
+{{-- CSS HALAMAN LOGIN --}}
 @push('styles')
 <style>
     /* Menghilangkan ikon password bawaan browser */
@@ -22,7 +23,22 @@
         pointer-events: none;
     }
 
-    /* Tampilan tombol mata */
+    /* HEADER LOGIN */
+    .login-logo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+
+    /* UKURAN IKON TOPI WISUDA */
+    .login-logo i {
+        font-size: 72px;
+        color: var(--bs-primary);
+        line-height: 1;
+    }
+
+    /* TOMBOL TAMPILKAN PASSWORD */
     .password-toggle {
         display: flex;
         align-items: center;
@@ -40,13 +56,22 @@
 
     {{-- HEADER LOGIN --}}
     <div class="text-center mb-4">
+
+        {{-- IKON TOPI WISUDA --}}
+        <div class="login-logo">
+            <i class="bi bi-mortarboard-fill"></i>
+        </div>
+
+        {{-- NAMA APLIKASI --}}
         <h1 class="h3 fw-bold mb-1">
             {{ config('app.name') }}
         </h1>
 
+        {{-- NAMA KAMPUS --}}
         <p class="text-body-secondary mb-0">
             Politeknik Negeri Pontianak
         </p>
+
     </div>
 
     {{-- NOTIFIKASI --}}
@@ -60,12 +85,15 @@
                 Masuk ke akun Anda
             </h2>
 
-            <form method="POST" action="{{ route('login.attempt') }}" novalidate>
+            <form method="POST"
+                  action="{{ route('login.attempt') }}"
+                  novalidate>
 
                 @csrf
 
                 {{-- EMAIL --}}
                 <div class="mb-3">
+
                     <x-form-input
                         label="Email"
                         name="email"
@@ -74,6 +102,7 @@
                         required
                         autofocus
                     />
+
                 </div>
 
                 {{-- PASSWORD --}}
@@ -140,6 +169,7 @@
                         type="checkbox"
                         name="remember"
                         id="remember"
+                        value="1"
                     >
 
                     <label class="form-check-label" for="remember">

@@ -25,9 +25,13 @@
     {{-- SweetAlert2 CSS --}}
     <link href="{{ asset('vendor/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet">
 
+    {{-- DataTables CSS --}}
+    <link href="{{ asset('vendor/datatables/dataTables.bootstrap5.min.css') }}" rel="stylesheet">
+
     {{-- CSS SIAKAD --}}
     <link href="{{ asset('css/siakad.css') }}" rel="stylesheet">
 
+    {{-- CSS Tambahan dari Halaman --}}
     @stack('styles')
 </head>
 
@@ -42,9 +46,13 @@
             {{-- SIDEBAR --}}
             @include('layouts.partials.sidebar')
 
-            {{-- CONTENT --}}
+            {{-- KONTEN HALAMAN --}}
             <main class="col-lg-9 col-xl-10 px-3 px-md-4 py-4">
 
+                {{-- Pesan notifikasi Bootstrap jika ada --}}
+                @includeIf('layouts.partials.flash')
+
+                {{-- Konten utama --}}
                 @yield('content')
 
                 {{-- FOOTER --}}
@@ -59,24 +67,45 @@
         </div>
     </div>
 
-    {{-- Bootstrap JavaScript --}}
+    {{-- ========================================= --}}
+    {{-- JAVASCRIPT LIBRARY --}}
+    {{-- ========================================= --}}
+
+    {{-- 1. jQuery: wajib dimuat sebelum DataTables --}}
+	<script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+
+    {{-- 2. Bootstrap JavaScript --}}
     <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
-    {{-- SweetAlert2 JavaScript --}}
+	{{-- 3. DataTables JavaScript --}}
+	<script src="{{ asset('vendor/datatables/dataTables.min.js') }}"></script>
+	<script src="{{ asset('vendor/datatables/dataTables.bootstrap5.min.js') }}"></script>
+
+    {{-- 4. SweetAlert2 JavaScript --}}
     <script src="{{ asset('vendor/sweetalert2/sweetalert2.all.min.js') }}"></script>
 
+
+    {{-- ========================================= --}}
     {{-- NOTIFIKASI SWEETALERT2 --}}
+    {{-- ========================================= --}}
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
 
-            // POPUP BERHASIL LOGIN
+            // Pastikan SweetAlert2 tersedia
+            if (typeof Swal === 'undefined') {
+                console.error('SweetAlert2 belum berhasil dimuat.');
+                return;
+            }
+
+            // NOTIFIKASI BERHASIL LOGIN
             @if (session()->has('login_success'))
                 Swal.fire({
                     icon: 'success',
                     title: 'Anda Berhasil Login!',
                     text: @json(session('login_success')),
                     confirmButtonText: 'OK',
-                    confirmButtonColor: '#6558c9',
+                    confirmButtonColor: '#0d6efd',
                     allowOutsideClick: false,
                     allowEscapeKey: false
                 });
@@ -126,7 +155,11 @@
         });
     </script>
 
+
+    {{-- ========================================= --}}
     {{-- JAVASCRIPT TEMA TERANG DAN GELAP --}}
+    {{-- ========================================= --}}
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
 
@@ -135,6 +168,7 @@
             const ikon = document.getElementById('themeIcon');
             const teks = document.getElementById('themeText');
 
+            // Periksa apakah tombol tema tersedia
             if (!tombol || !ikon || !teks) {
                 return;
             }
@@ -147,8 +181,10 @@
                     ? 'light'
                     : 'dark';
 
+                // Mengubah tema
                 html.setAttribute('data-bs-theme', temaBaru);
 
+                // Mengubah ikon dan tulisan tombol
                 if (temaBaru === 'dark') {
                     ikon.className = 'bi bi-sun-fill';
                     teks.textContent = 'Mode Terang';
@@ -162,8 +198,13 @@
         });
     </script>
 
+
+    {{-- ========================================= --}}
     {{-- SCRIPT TAMBAHAN DARI HALAMAN LAIN --}}
+    {{-- ========================================= --}}
+
+    {{-- Contoh: Script DataTables pada index Mata Kuliah --}}
     @stack('scripts')
-	
+
 </body>
 </html>

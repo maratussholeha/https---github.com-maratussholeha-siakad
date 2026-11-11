@@ -14,14 +14,20 @@
 
     <title>@yield('title', 'Masuk') | {{ config('app.name') }}</title>
 
+    {{-- Bootstrap CSS --}}
     <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}"
           rel="stylesheet">
 
+    {{-- Bootstrap Icons --}}
     <link href="{{ asset('vendor/bootstrap-icons/bootstrap-icons.min.css') }}"
           rel="stylesheet">
 
+    {{-- CSS SIAKAD --}}
     <link href="{{ asset('css/siakad.css') }}"
           rel="stylesheet">
+
+    {{-- CSS Tambahan dari Halaman --}}
+    @stack('styles')
 </head>
 
 <body class="bg-body-tertiary">
@@ -35,40 +41,40 @@
 
     </main>
 
-   <script src="{{ asset('vendor/sweetalert2/sweetalert2.all.min.js') }}"></script>
+    {{-- SweetAlert2 --}}
+    <script src="{{ asset('vendor/sweetalert2/sweetalert2.all.min.js') }}"></script>
 
-	<script>
-		@if (session()->has('success'))
-			Swal.fire({
-				icon: 'success',
-				title: 'Anda Berhasil Keluar!',
-				text: @json(session('success')),
-				confirmButtonText: 'OK',
-				allowOutsideClick: false
-			});
-		@endif
-	</script>
-	
-	{{-- NOTIFIKASI LOGIN GAGAL --}}
-	<script src="{{ asset('vendor/sweetalert2/sweetalert2.all.min.js') }}"></script>
+    {{-- NOTIFIKASI LOGOUT BERHASIL --}}
+    @if (session()->has('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Anda Berhasil Keluar!',
+                text: @json(session('success')),
+                confirmButtonText: 'OK',
+                allowOutsideClick: false
+            });
+        </script>
+    @endif
 
-	<script>
-		document.addEventListener('DOMContentLoaded', function () {
+    {{-- NOTIFIKASI LOGIN GAGAL --}}
+    @if ($errors->any())
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Login Gagal!',
+                    text: 'Email atau kata sandi yang Anda masukkan tidak sesuai.',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#6558c9',
+                    allowOutsideClick: false
+                });
+            });
+        </script>
+    @endif
 
-			@if ($errors->any())
-				Swal.fire({
-					icon: 'error',
-					title: 'Login Gagal!',
-					text: 'Email atau kata sandi yang Anda masukkan tidak sesuai.',
-					confirmButtonText: 'OK',
-					confirmButtonColor: '#6558c9',
-					allowOutsideClick: false
-				});
-			@endif
-
-		});
-	</script>
-	@stack('scripts')
+    {{-- JavaScript Tambahan dari Halaman --}}
+    @stack('scripts')
 
 </body>
 </html>
